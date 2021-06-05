@@ -1,5 +1,7 @@
 import React, { useEffect, useReducer } from "react";
 
+import Label from "./Label";
+
 const inputReducer = (state, action) => {
   switch (action.type) {
     case "CHANGE":
@@ -60,7 +62,7 @@ const Input = (props) => {
     ) : (
       <textarea
         id={props.id}
-        className={`form-control ${props.className}}`}
+        className={`form-control ${props.className}`}
         style={props.style}
         name={name}
         value={inputState.value}
@@ -70,8 +72,17 @@ const Input = (props) => {
         rows={props.rows || "3"}
       />
     );
-  return (   
-       element  
+  return (
+    <div className={`form-floating ${props.divClass}`}>
+      {element}
+      {props.isLabelVisible && (
+        <Label
+          id={props.id}
+          display={props.display}
+          label={props.label}
+        ></Label>
+      )}
+    </div>
   );
 };
 
@@ -85,6 +96,7 @@ const Input = (props) => {
 *placeholder
 *value
 *isRequired
+*divClass
 textarea *rows
 */
 export default Input;

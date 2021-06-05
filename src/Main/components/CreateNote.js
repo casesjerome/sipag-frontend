@@ -1,6 +1,6 @@
-import React, { useCallback, useReducer, useState } from "react";
+import React, { useCallback, useState } from "react";
 
-import Input, { resetValues } from "../shared/components/FormElements/Input";
+import Input, { resetValues } from "../../shared/components/FormElements/Input";
 
 export default function CreateNote(props) {
   const [note, setNote] = useState({

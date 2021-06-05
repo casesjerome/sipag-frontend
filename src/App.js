@@ -1,9 +1,17 @@
 import React, { useState, useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Redirect,
+  Switch,
+} from "react-router-dom";
 import axios from "axios";
 import qs from "qs";
-import Header from "./components/Header";
-import CreateNote from "./components/CreateNote";
-import Notes from "./components/Notes";
+
+import Auth from "./Main/containers/Auth";
+import Navbar from "./shared/components/Navigation/Navbar";
+import CreateNote from "./Main/components/CreateNote";
+import Notes from "./Main/components/Notes";
 
 export default function App() {
   const [notes, setNotes] = useState([
@@ -18,7 +26,7 @@ export default function App() {
     axios
       .get("http://localhost:8080/notes", { crossdomain: true })
       .then((response) => {
-        setNotes(response.data);        
+        setNotes(response.data);
       })
       .catch((err) => console.log(err));
   }
@@ -53,26 +61,67 @@ export default function App() {
       .catch((err) => console.log(err));
   }
 
-  return (
-    <div>
-      <Header /> <CreateNote onAdd={addNote} />
-      <div className="container mt-5 pt-5">
-        <div className="row row-cols-lg-4 row-cols-md-2 row-cols-sm-1">
-          {notes.map((item, i) => {
-            return (
-              <Notes
-                id={i}
-                key={item._id}
-                dbKey={item._id}
-                title={item.title}
-                content={item.content}
-                onDelete={deleteNote}
-              />
-            );
-          })}
-        </div>
+  const noteMap = (
+    <div className="container mt-5 pt-5">
+      <div className="row row-cols-lg-4 row-cols-md-2 row-cols-sm-1">
+        {notes.map((item, i) => {
+          return (
+            <Notes
+              id={i}
+              key={item._id}
+              dbKey={item._id}
+              title={item.title}
+              content={item.content}
+              onDelete={deleteNote}
+            />
+          );
+        })}
       </div>
     </div>
+  );
+
+  const isLoggedin = false;
+
+  let routes;
+
+  if (isLoggedin) {
+    routes = (
+      <Switch>
+        <Route path="/:userid" exact>
+          <CreateNote onAdd={addNote} />
+          {noteMap}
+        </Route>
+        <Route path="/auth" exact>
+          {/* <Auth></Auth> */}
+        </Route>
+        <Redirect to="/" /> {/* ToDo: Redirect to /:userid */}
+      </Switch>
+    );
+  } else {
+    routes = (
+      <Switch>
+        <Route path="/" exact>
+          <Auth />
+        </Route>
+        <Route path="/auth" exact>
+          <Auth />
+        </Route>
+        <Route path="/auth">
+          <Auth />
+        </Route>
+        <Redirect to="/auth" />
+      </Switch>
+    );
+  }
+
+  return (
+    <React.Fragment>
+      <Router>
+        <Navbar />
+
+        {routes}
+      </Router>
+    </React.Fragment>
   );
 
   // return (

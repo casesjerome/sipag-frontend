@@ -1,0 +1,34 @@
+.container-login {
+  margin: 15vh 15vw 0;
+  padding: 3rem 20vw;
+}
+
+.login-form {
+  padding: 1rem;
+  /* border: 3px solid #686868; */
+  /* border-radius: 9px; */
+  box-shadow: 1px 1px 9px 0px rgba(0, 0, 0, 0.5);
+  -webkit-box-shadow: 1px 1px 9px 0px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 1px 1px 9px 0px rgba(0, 0, 0, 0.5);
+}
+
+.px-6 {
+  padding: 0 5rem 0;
+}
+
+.mx-6 {
+  margin: 0 5rem 0;
+}
+
+.signup-text{
+    color: cornflowerblue;
+}
+
+.subtitle {
+    font-family: 'Sacramento', cursive;
+    font-size: 6rem;
+}
+
+.logo-top {
+    border: 1px solid #000;
+}
