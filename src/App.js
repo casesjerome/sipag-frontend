@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import qs from "qs";
-import Header from "./Header";
-import CreateNote from "./CreateNote";
-import Notes from "./Notes";
+import Header from "./components/Header";
+import CreateNote from "./components/CreateNote";
+import Notes from "./components/Notes";
 
 export default function App() {
   const [notes, setNotes] = useState([
