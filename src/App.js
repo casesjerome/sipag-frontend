@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -9,19 +9,27 @@ import axios from "axios";
 import qs from "qs";
 
 import Auth from "./Main/containers/Auth";
+import { AuthContext } from "./shared/components/context/auth-context";
 import Navbar from "./shared/components/Navigation/Navbar";
 import CreateNote from "./Main/components/CreateNote";
 import Notes from "./Main/components/Notes";
 
 export default function App() {
-  const [notes, setNotes] = useState([
-    // {
-    //   title: "qoute bites",
-    //   content:
-    //     "Life is like riding a bicycle. To keep your balance, you must keep moving.",
-    // },
-  ]);
+  const [isLoggedIn, setIsLoggedin] = useState(false);
+  const [notes, setNotes] = useState([]);
+  const [userDetails, setUserDetails] = useState({});
+  const login = useCallback(() => {
+    setIsLoggedin(true);
+  }, []);
+  const logout = useCallback(() => {
+    setIsLoggedin(false);
+  }, []);
+  const userDetailsHandler = useCallback((userDetailsValue) => {
+    setUserDetails(userDetailsValue);
+  }, []);
+  console.log(userDetails);
 
+  //Notes
   function getNotes() {
     axios
       .get("http://localhost:8080/notes", { crossdomain: true })
@@ -80,19 +88,15 @@ export default function App() {
     </div>
   );
 
-  const isLoggedin = false;
-
+  //Routes
+  //const isLoggedin = false;
   let routes;
-
-  if (isLoggedin) {
+  if (isLoggedIn) {
     routes = (
       <Switch>
-        <Route path="/:userid" exact>
+        <Route path="/" exact>
           <CreateNote onAdd={addNote} />
           {noteMap}
-        </Route>
-        <Route path="/auth" exact>
-          {/* <Auth></Auth> */}
         </Route>
         <Redirect to="/" /> {/* ToDo: Redirect to /:userid */}
       </Switch>
@@ -115,33 +119,19 @@ export default function App() {
   }
 
   return (
-    <React.Fragment>
+    <AuthContext.Provider
+      value={{
+        isLoggedin: isLoggedIn,
+        login: login,
+        logout: logout,
+        userDetails: userDetails,
+        userDetailsHandler: userDetailsHandler,
+      }}
+    >
       <Router>
         <Navbar />
-
         {routes}
       </Router>
-    </React.Fragment>
+    </AuthContext.Provider>
   );
-
-  // return (
-  //   <div>
-  //     <Header /> <CreateNote onAdd={addNote} />
-  //     <div className="container mt-5 pt-5 ">
-  //       <div className="row row-cols-lg-4 row-cols-md-2 row-cols-sm-1">
-  //         {notes.map((item, i) => {
-  //           return (
-  //             <Notes
-  //               id={i}
-  //               key={i}
-  //               title={item.title}
-  //               content={item.content}
-  //               onDelete={deleteNote}
-  //             />
-  //           );
-  //         })}
-  //       </div>
-  //     </div>
-  //   </div>
-  // );
 }

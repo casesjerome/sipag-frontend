@@ -4,9 +4,7 @@
 }
 
 .login-form {
-  padding: 1rem;
-  /* border: 3px solid #686868; */
-  /* border-radius: 9px; */
+  padding: 1rem;  
   box-shadow: 1px 1px 9px 0px rgba(0, 0, 0, 0.5);
   -webkit-box-shadow: 1px 1px 9px 0px rgba(0, 0, 0, 0.5);
   -moz-box-shadow: 1px 1px 9px 0px rgba(0, 0, 0, 0.5);
@@ -29,6 +27,6 @@
     font-size: 6rem;
 }
 
-.logo-top {
+.line-top {
     border: 1px solid #000;
 }

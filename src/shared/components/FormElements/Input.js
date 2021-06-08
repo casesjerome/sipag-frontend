@@ -73,7 +73,7 @@ const Input = (props) => {
       />
     );
   return (
-    <div className={`form-floating ${props.divClass}`}>
+    <div className={`${props.divClass}`}>
       {element}
       {props.isLabelVisible && (
         <Label

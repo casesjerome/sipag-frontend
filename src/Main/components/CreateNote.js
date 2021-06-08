@@ -9,14 +9,14 @@ export default function CreateNote(props) {
   });
 
   //Input Handler
-  const inputHandler = useCallback((name, value) => {
+  const createNoteInputHandler = useCallback((name, value) => {
     setNote((prevNote) => {
       return { ...prevNote, [name]: value };
     });
   }, []);
 
   //On Form Submit
-  function submitForm(e) {
+  function createNoteSubmitHandler(e) {
     e.preventDefault();
     props.onAdd(note);
     setNote({ title: "", content: "" });
@@ -25,20 +25,20 @@ export default function CreateNote(props) {
 
   return (
     <div className="container mt-5">
-      <form autoComplete="off" onSubmit={submitForm}>
+      <form autoComplete="off" onSubmit={createNoteSubmitHandler}>
         <Input
           type="text"
           name="title"
           placeholder="Subject"
           elementType="input"
-          onInput={inputHandler}
+          onInput={createNoteInputHandler}
           isRequired={true}
         />
         <Input
           name="content"
           placeholder="Content"
           elementType="textarea"
-          onInput={inputHandler}
+          onInput={createNoteInputHandler}
           isRequired={false}
         />
         <button type="submit" className="btn btn-dark mt-2">
