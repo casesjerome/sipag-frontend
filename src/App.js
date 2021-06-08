@@ -27,12 +27,13 @@ export default function App() {
   const userDetailsHandler = useCallback((userDetailsValue) => {
     setUserDetails(userDetailsValue);
   }, []);
-  console.log(userDetails);
 
   //Notes
   function getNotes() {
     axios
-      .get("http://localhost:8080/notes", { crossdomain: true })
+      .get(`http://localhost:8080/${userDetails._id}/notes`, {
+        crossdomain: true,
+      })
       .then((response) => {
         setNotes(response.data);
       })
@@ -42,13 +43,13 @@ export default function App() {
   useEffect(() => {
     getNotes();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isLoggedIn]);
 
   function addNote(note) {
     let body = qs.stringify({ title: note.title, content: note.content });
 
     axios
-      .post("http://localhost:8080/notes", body, {
+      .post(`http://localhost:8080/${userDetails._id}/notes`, body, {
         "Content-Type": "application/x-www-form-urlencoded",
       })
       .then((response) => {
@@ -91,22 +92,21 @@ export default function App() {
   //Routes
   //const isLoggedin = false;
   let routes;
+  const path = `/${userDetails._id}`;
+  
   if (isLoggedIn) {
     routes = (
       <Switch>
-        <Route path="/" exact>
-          <CreateNote onAdd={addNote} />
+        <Route path={path} exact>
+          <CreateNote onAdd={addNote} />          
           {noteMap}
         </Route>
-        <Redirect to="/" /> {/* ToDo: Redirect to /:userid */}
+        <Redirect to={path} /> {/* ToDo: Redirect to /:userid */}
       </Switch>
     );
   } else {
     routes = (
       <Switch>
-        <Route path="/" exact>
-          <Auth />
-        </Route>
         <Route path="/auth" exact>
           <Auth />
         </Route>
