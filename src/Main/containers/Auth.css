@@ -1,10 +1,25 @@
+.btn-success {
+  background-color: #0a732d;
+  border-color: #0a732d;
+}
+
+.btn-success:hover {
+  background-color: #11ad45;
+  border-color: #11ad45;
+}
+
+.auth-option-button {
+  border: 0 #fff;
+  background-color: #fff;
+}
+
 .container-login {
   margin: 15vh 15vw 0;
   padding: 3rem 20vw;
 }
 
 .login-form {
-  padding: 1rem;  
+  padding: 1rem;
   box-shadow: 1px 1px 9px 0px rgba(0, 0, 0, 0.5);
   -webkit-box-shadow: 1px 1px 9px 0px rgba(0, 0, 0, 0.5);
   -moz-box-shadow: 1px 1px 9px 0px rgba(0, 0, 0, 0.5);
@@ -18,15 +33,37 @@
   margin: 0 5rem 0;
 }
 
-.signup-text{
-    color: cornflowerblue;
+.mt-6 {
+  margin-top: 15vh;
+}
+
+.signup-text {
+  color: cornflowerblue;
+}
+
+.title {
+  font-family: "Sacramento", cursive;
+  font-size: calc(5rem + 1vw);
 }
 
 .subtitle {
-    font-family: 'Sacramento', cursive;
-    font-size: 6rem;
+  text-align: center;
 }
 
 .line-top {
-    border: 1px solid #000;
+  border: 1px solid #000;
+}
+
+@media (max-width: 992px) {
+  .container-login {
+    margin: 12vh 12vw 0;
+    padding: 3rem 20vw;
+  }
+}
+
+@media (max-width: 768px) {
+  .container-login {
+    margin: 0;
+    padding: 3rem 20vw;
+  }
 }
