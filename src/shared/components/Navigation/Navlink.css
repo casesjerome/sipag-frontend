@@ -1,0 +1,12 @@
+.dropdown-menu{
+    min-width: 7rem;
+}
+
+.side-menu {
+    position: absolute;
+    right: 55px;
+}
+
+.nav-link {
+    color: #fff;
+}

@@ -9,7 +9,7 @@ export default function Notes(props) {
           <p className="card-text">{props.content}</p>
           <button
             className="btn btn-outline-dark btn-sm float-end"
-            onClick={() => props.onDelete(props.id, props.dbKey)}
+            onClick={() => props.onDelete(props.id, props.noteId)}
           >
             Delete
           </button>

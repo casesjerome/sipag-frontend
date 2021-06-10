@@ -78,7 +78,7 @@ export default function App() {
             <Notes
               id={i}
               key={item._id}
-              dbKey={item._id}
+              noteId={item.noteId}
               title={item.title}
               content={item.content}
               onDelete={deleteNote}
