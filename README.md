@@ -8,6 +8,9 @@
 * axios
 
 ### ToDo
-1. Login feature (implement user based approach)
-2. Able to edit individual notes
-3. Improve design
+- [x] Login/Register
+- [ ] Logout
+- [ ] Session
+- [ ] Edit user
+- [ ] Edit individual notes
+- [ ] Improve overall design
