@@ -22,6 +22,7 @@ const Input = (props) => {
   //State Initialization
   const [inputState, dispatch] = useReducer(inputReducer, {
     value: props.value || "",
+    name: props.name || "",
   });
 
   //Reset Values

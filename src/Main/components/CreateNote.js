@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from "react";
 
-import Input, { resetValues } from "../../shared/components/FormElements/Input";
+import Input from "../../shared/components/FormElements/Input";
 
 export default function CreateNote(props) {
   const [note, setNote] = useState({
@@ -19,8 +19,7 @@ export default function CreateNote(props) {
   function createNoteSubmitHandler(e) {
     e.preventDefault();
     props.onAdd(note);
-    setNote({ title: "", content: "" });
-    resetValues();
+  
   }
 
   return (

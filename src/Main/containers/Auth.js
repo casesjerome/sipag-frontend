@@ -2,7 +2,7 @@ import React, { useCallback, useState, useContext } from "react";
 import axios from "axios";
 import qs from "qs";
 
-import Input, { resetValues } from "../../shared/components/FormElements/Input";
+import Input from "../../shared/components/FormElements/Input";
 import { AuthContext } from "../../shared/components/context/auth-context";
 import "./Auth.css";
 
@@ -23,7 +23,7 @@ const Auth = (props) => {
     });
     if (user.isRegistered) {
       axios
-        .post("http://localhost:8080/login", body, {
+        .post("http://localhost:8080/api/users/login", body, {
           "Content-Type": "application/x-www-form-urlencoded",
         })
         .then((response) => {
@@ -35,7 +35,7 @@ const Auth = (props) => {
         .catch((err) => console.log(err));
     } else {
       axios
-        .post("http://localhost:8080/register", body, {
+        .post("http://localhost:8080/api/users/register", body, {
           "Content-Type": "application/x-www-form-urlencoded",
         })
         .then((response) => {
@@ -83,7 +83,7 @@ const Auth = (props) => {
                 <h1 className="h3  fw-normal title d-flex justify-content-center">
                   produktibo
                 </h1>
-                <p className="text-muted mb-5 subtitle">Improve your productivity</p>
+                <p className="text-muted mb-5 subtitle">Improve your work</p>
                 <Input
                   type="email"
                   id="username"

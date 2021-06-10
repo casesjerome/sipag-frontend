@@ -31,7 +31,7 @@ export default function App() {
   //Notes
   function getNotes() {
     axios
-      .get(`http://localhost:8080/${userDetails._id}/notes`, {
+      .get(`http://localhost:8080/api/notes/all/${userDetails._id}`, {
         crossdomain: true,
       })
       .then((response) => {
@@ -49,7 +49,7 @@ export default function App() {
     let body = qs.stringify({ title: note.title, content: note.content });
 
     axios
-      .post(`http://localhost:8080/${userDetails._id}/notes`, body, {
+      .post(`http://localhost:8080/api/notes/all/${userDetails._id}`, body, {
         "Content-Type": "application/x-www-form-urlencoded",
       })
       .then((response) => {
@@ -65,7 +65,7 @@ export default function App() {
       });
     });
     axios
-      .delete(`http://localhost:8080/notes/${key}`)
+      .delete(`http://localhost:8080/api/notes/specific/${key}`)
       .then((response) => console.log("Note Deleted"))
       .catch((err) => console.log(err));
   }
