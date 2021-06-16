@@ -7,11 +7,14 @@ import { AuthContext } from "../../shared/context/auth-context";
 import CreateNote from "../components/CreateNote";
 import Notes from "../components/Notes";
 import LoadingElement from "../../shared/components/UIElements/LoadingElement";
+import ErrorModal from "../../shared/components/UIElements/ErrorModal";
 
 const NoteBoard = (props) => {
   const auth = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(false);
   const [notes, setNotes] = useState([]);
+  const [ErrorMessage, setErrorMessage] = useState("");
+
   //Notes
   function getNotes() {
     setIsLoading(true);
@@ -25,8 +28,14 @@ const NoteBoard = (props) => {
         setIsLoading(false);
       })
       .catch((err) => {
-        console.log(err);
         setIsLoading(false);
+        if (err.response) {
+          setErrorMessage(err);
+        } else if (err.request) {
+          setErrorMessage("Server is down. Please retry later.");
+        } else { 
+          //ToDo         
+        }  
       });
   }
 
@@ -36,8 +45,8 @@ const NoteBoard = (props) => {
   }, [auth.token]);
 
   function addNote(note) {
+    setIsLoading(true);
     let body = qs.stringify({ title: note.title, content: note.content });
-
     axios
       .post(
         `http://localhost:8080/api/notes/all/${auth.userDetails._id}`,
@@ -48,24 +57,49 @@ const NoteBoard = (props) => {
         }
       )
       .then((response) => {
+        setIsLoading(false);
         getNotes();
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        setIsLoading(false);
+        if (err.response) {
+          setErrorMessage(err);
+        } else if (err.request) {
+          setErrorMessage("Server is down. Please retry later.");
+        } else { 
+          //ToDo         
+        }      
+        
+      });
   }
 
   function deleteNote(id, key) {
+    setIsLoading(true);
     axios
-      .delete(`http://localhost:8080/api/notes/specific/${key}`, {
-        headers: { Authorization: "Bearer " + auth.token },
-      })
+      .delete(
+        `http://localhost:8080/api/notes/specific/${auth.userDetails._id}/${key}`,
+        {
+          headers: { Authorization: "Bearer " + auth.token },
+        }
+      )
       .then((response) => {
         setNotes((prevNotes) => {
           return prevNotes.filter((noteItem, index) => {
             return index !== id;
           });
         });
+        setIsLoading(false);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        setIsLoading(false);
+        if (err.response) {
+          setErrorMessage(err);
+        } else if (err.request) {
+          setErrorMessage("Server is down. Please retry later.");
+        } else { 
+          //ToDo         
+        }  
+      });
   }
 
   const noteMap = (
@@ -86,8 +120,21 @@ const NoteBoard = (props) => {
       </div>
     </div>
   );
+
+  const onClickHandler = (e) => {
+    e.preventDefault();
+    setErrorMessage("");
+  };
+
   return (
     <React.Fragment>
+      {ErrorMessage && !isLoading && (
+        <ErrorModal
+          error={ErrorMessage}
+          title="Error!"
+          onClick={onClickHandler}
+        />
+      )}
       {isLoading && <LoadingElement />}
       <CreateNote onAdd={addNote} />
       {noteMap}

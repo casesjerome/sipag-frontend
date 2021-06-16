@@ -46,9 +46,15 @@ const Auth = (props) => {
             auth.login(tkn);
           }
         })
-        .catch((err) => {
-          setErrorMessage("Username and/or Password is Incorrect");
+        .catch((err) => {          
           setIsLoading(false);
+          if (err.response) {
+            setErrorMessage("Username and/or Password is Incorrect");
+          } else if (err.request) {
+            setErrorMessage("Server is down. Please retry later.");
+          } else { 
+            //ToDo         
+          }  
         });
     } else {
       axios
@@ -70,9 +76,15 @@ const Auth = (props) => {
             auth.login(tkn);
           }
         })
-        .catch((err) => {
-          setErrorMessage(err.response.data.error.message);
+        .catch((err) => {          
           setIsLoading(false);
+          if (err.response) {
+            setErrorMessage(err.response.data.error.message);
+          } else if (err.request) {
+            setErrorMessage("Server is down. Please retry later.");
+          } else { 
+            //ToDo         
+          }  
         });
     }
   }
