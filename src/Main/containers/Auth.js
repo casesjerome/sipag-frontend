@@ -12,7 +12,7 @@ const Auth = (props) => {
   const auth = useContext(AuthContext);
   const [user, setUser] = useState({
     username: "",
-    password: "",    
+    password: "",
   });
   const [isLogin, setIsLogin] = useState(true);
   const [ErrorMessage, setErrorMessage] = useState(null);
@@ -24,7 +24,7 @@ const Auth = (props) => {
       username: user.username,
       password: user.password,
     });
-    setIsLoading(true);    
+    setIsLoading(true);
     if (isLogin) {
       axios
         .post("http://localhost:8080/api/users/login", body, {
@@ -37,52 +37,52 @@ const Auth = (props) => {
             setIsLoading(false);
           } else {
             const { userId, username } = response.data.data;
+            const { tkn } = response.data;
+            //console.log(tkn);
             const userDetailsValue = { _id: userId, username: username };
 
             auth.userDetailsHandler(userDetailsValue);
             setIsLoading(false);
-            auth.login();
+            auth.login(tkn);
           }
         })
-        .catch((err) => {          
+        .catch((err) => {
           setErrorMessage("Username and/or Password is Incorrect");
-          setIsLoading(false);                 
+          setIsLoading(false);
         });
     } else {
       axios
         .post("http://localhost:8080/api/users/register", body, {
-          "Content-Type": "application/x-www-form-urlencoded", 
+          "Content-Type": "application/x-www-form-urlencoded",
         })
-        .then((response) => {         
+        .then((response) => {
           if (response.status < 200 || response.status > 299) {
             //ToDo
             setErrorMessage(response.data.error);
             setIsLoading(false);
           } else {
             const { userId, username } = response.data.data;
+            const { tkn } = response.data;            
             const userDetailsValue = { _id: userId, username: username };
 
             auth.userDetailsHandler(userDetailsValue);
             setIsLoading(false);
-            auth.login();
+            auth.login(tkn);
           }
         })
-        .catch((err) => {         
+        .catch((err) => {
           setErrorMessage(err.response.data.error.message);
-          setIsLoading(false);          
+          setIsLoading(false);
         });
     }
   }
 
   //Input Handler
-  const authInputHandler = useCallback(
-    (name, value) => {
-      setUser((prevInput) => {
-        return { ...prevInput, [name]: value };
-      });
-    },
-    []
-  );
+  const authInputHandler = useCallback((name, value) => {
+    setUser((prevInput) => {
+      return { ...prevInput, [name]: value };
+    });
+  }, []);
 
   //Is Registered Handler
   const switchModeHandler = () => {
@@ -92,13 +92,13 @@ const Auth = (props) => {
   //On Form Submit
   const authSubmitHandler = (e) => {
     e.preventDefault();
-    authenticateUser(user);    
+    authenticateUser(user);
   };
 
   //
   const onClickHandler = (e) => {
     e.preventDefault();
-    setErrorMessage(null);   
+    setErrorMessage(null);
   };
 
   return (
