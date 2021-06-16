@@ -9,8 +9,8 @@
 
 ### ToDo
 - [x] Login/Register
-- [ ] Logout
-- [ ] Session
+- [x] Logout
+- [ ] Token
 - [ ] Edit user
 - [ ] Edit individual notes
-- [ ] Improve overall design
+- [ ] Final design

@@ -3,17 +3,20 @@ import axios from "axios";
 import qs from "qs";
 
 import Input from "../../shared/components/FormElements/Input";
-import { AuthContext } from "../../shared/components/context/auth-context";
+import LoadingElement from "../../shared/components/UIElements/LoadingElement";
+import ErrorModal from "../../shared/components/UIElements/ErrorModal";
+import { AuthContext } from "../../shared/context/auth-context";
 import "./Auth.css";
 
 const Auth = (props) => {
   const auth = useContext(AuthContext);
   const [user, setUser] = useState({
     username: "",
-    password: "",
-    isRegistered: true,
+    password: "",    
   });
-  const [isRegistered, setIsRegistered] = useState(true);
+  const [isLogin, setIsLogin] = useState(true);
+  const [ErrorMessage, setErrorMessage] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   //Authentication
   function authenticateUser(user) {
@@ -21,31 +24,53 @@ const Auth = (props) => {
       username: user.username,
       password: user.password,
     });
-    if (user.isRegistered) {
+    setIsLoading(true);    
+    if (isLogin) {
       axios
         .post("http://localhost:8080/api/users/login", body, {
           "Content-Type": "application/x-www-form-urlencoded",
         })
         .then((response) => {
-          const { userId, username } = response.data.data;
-          const userDetailsValue = { _id: userId, username: username };
-          auth.userDetailsHandler(userDetailsValue);
-          auth.login();
+          if (response.status < 200 || response.status > 299) {
+            //ToDo
+            setErrorMessage(response.data.error);
+            setIsLoading(false);
+          } else {
+            const { userId, username } = response.data.data;
+            const userDetailsValue = { _id: userId, username: username };
+
+            auth.userDetailsHandler(userDetailsValue);
+            setIsLoading(false);
+            auth.login();
+          }
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {          
+          setErrorMessage("Username and/or Password is Incorrect");
+          setIsLoading(false);                 
+        });
     } else {
       axios
         .post("http://localhost:8080/api/users/register", body, {
-          "Content-Type": "application/x-www-form-urlencoded",
+          "Content-Type": "application/x-www-form-urlencoded", 
         })
-        .then((response) => {
-          const { userId, username } = response.data.data;
-          const userDetailsValue = { _id: userId, username: username };
-          auth.userDetailsHandler(userDetailsValue);
-          auth.login();
-          console.log(auth.isLoggedin);
+        .then((response) => {         
+          if (response.status < 200 || response.status > 299) {
+            //ToDo
+            setErrorMessage(response.data.error);
+            setIsLoading(false);
+          } else {
+            const { userId, username } = response.data.data;
+            const userDetailsValue = { _id: userId, username: username };
+
+            auth.userDetailsHandler(userDetailsValue);
+            setIsLoading(false);
+            auth.login();
+          }
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {         
+          setErrorMessage(err.response.data.error.message);
+          setIsLoading(false);          
+        });
     }
   }
 
@@ -53,87 +78,104 @@ const Auth = (props) => {
   const authInputHandler = useCallback(
     (name, value) => {
       setUser((prevInput) => {
-        return { ...prevInput, [name]: value, isRegistered: isRegistered };
+        return { ...prevInput, [name]: value };
       });
     },
-    [isRegistered]
+    []
   );
 
   //Is Registered Handler
   const switchModeHandler = () => {
-    setIsRegistered((prevMode) => !prevMode);
+    setIsLogin((prevMode) => !prevMode);
   };
 
   //On Form Submit
-  function authSubmitHandler(e) {
+  const authSubmitHandler = (e) => {
     e.preventDefault();
-    authenticateUser(user);
-    setUser({ username: "", password: "" });    
-  }
+    authenticateUser(user);    
+  };
+
+  //
+  const onClickHandler = (e) => {
+    e.preventDefault();
+    setErrorMessage(null);   
+  };
 
   return (
-    <div className="container-fluid">
-      <div className="row mt-6">
-        <div className="col-lg-4 col-md-2"></div>
-        <div className="col-lg-4 col-md-8">
-          <div className="login-form">
-            <main className="form-signin">
-              <form onSubmit={authSubmitHandler}>
-                <div className="mb-4 line-top" alt="" width="100%" />
-                <h1 className="h3  fw-normal title d-flex justify-content-center">
-                  produktibo
-                </h1>
-                <p className="text-muted mb-5 subtitle">Improve your work</p>
-                <Input
-                  type="email"
-                  id="username"
-                  name="username"
-                  divClass="form-floating mb-1 mx-6"
-                  placeholder="name@example.com"
-                  elementType="input"
-                  isLabelVisible={true}
-                  label="Username"
-                  onInput={authInputHandler}
-                />
-                <Input
-                  type="password"
-                  id="password"
-                  name="password"
-                  divClass="form-floating mb-3 mx-6"
-                  placeholder=""
-                  elementType="input"
-                  isLabelVisible={true}
-                  label="Password"
-                  onInput={authInputHandler}
-                />
-                <div className="px-6 mb-1">
+    <React.Fragment>
+      {ErrorMessage && !isLoading && (
+        <ErrorModal
+          error={ErrorMessage}
+          title="Error!"
+          onClick={onClickHandler}
+        />
+      )}
+      {isLoading && <LoadingElement />}
+      <div className="container-fluid">
+        <div className="row mt-6">
+          <div className="col-lg-4 col-md-2"></div>
+          <div className="col-lg-4 col-md-8">
+            <div className="login-form">
+              <main className="form-signin">
+                <form onSubmit={authSubmitHandler}>
+                  <div className="mb-4 line-top" alt="" width="100%" />
+                  <h1 className="h3  fw-normal title d-flex justify-content-center">
+                    produktibo
+                  </h1>
+                  <p className="text-muted mb-5 subtitle">Improve your work</p>
+                  <Input
+                    type="email"
+                    id="username"
+                    name="username"
+                    divClass="form-floating mb-1 mx-6"
+                    placeholder="name@example.com"
+                    elementType="input"
+                    isLabelVisible={true}
+                    label="Email"
+                    onInput={authInputHandler}
+                  />
+                  <Input
+                    type="password"
+                    id="password"
+                    name="password"
+                    divClass="form-floating mb-3 mx-6"
+                    placeholder=""
+                    elementType="input"
+                    isLabelVisible={true}
+                    label="Password"
+                    minLength="6"
+                    maxLength="20"
+                    onInput={authInputHandler}
+                  />
+                  <div className="px-6 mb-1">
+                    <button
+                      className="w-100 btn btn-lg btn-success"
+                      type="submit"
+                    >
+                      {isLogin ? "Sign in" : "Continue"}
+                    </button>
+                  </div>
+                  <p className="mt-5 mb-1 text-muted d-flex justify-content-center fs-6">
+                    {isLogin
+                      ? "Don't have an account?"
+                      : "Already have an account?"}
+                  </p>
+                </form>
+                <div className="mb-3 d-flex justify-content-center ">
                   <button
-                    className="w-100 btn btn-lg btn-success"
-                    type="submit"
+                    className="fs-5 signup-text auth-option-button"
+                    onClick={switchModeHandler}
                   >
-                    {isRegistered ? "Sign in" : "Continue"}
+                    {isLogin ? "Create account" : "Sign in"}
                   </button>
                 </div>
-                <p className="mt-5 mb-1 text-muted d-flex justify-content-center fs-6">
-                  {isRegistered
-                    ? "Don't have an account?"
-                    : "Already have an account?"}
-                </p>
-              </form>
-              <div className="mb-3 d-flex justify-content-center ">
-                <button
-                  className="fs-5 signup-text auth-option-button"
-                  onClick={switchModeHandler}                  
-                >
-                  {isRegistered ? "Create account" : "Sign in"}
-                </button>
-              </div>
-            </main>
+              </main>
+            </div>
           </div>
+          <div className="col-lg-4 col-md-2"></div>
         </div>
-        <div className="col-lg-4 col-md-2"></div>
       </div>
-    </div>
+    </React.Fragment>
   );
 };
 

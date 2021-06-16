@@ -9,12 +9,14 @@ import axios from "axios";
 import qs from "qs";
 
 import Auth from "./Main/containers/Auth";
-import { AuthContext } from "./shared/components/context/auth-context";
+import { AuthContext } from "./shared/context/auth-context";
 import Navbar from "./shared/components/Navigation/Navbar";
 import CreateNote from "./Main/components/CreateNote";
 import Notes from "./Main/components/Notes";
+import LoadingElement from "./shared/components/UIElements/LoadingElement";
 
 export default function App() {
+  const [isLoading, setIsLoading] = useState(false);
   const [isLoggedIn, setIsLoggedin] = useState(false);
   const [notes, setNotes] = useState([]);
   const [userDetails, setUserDetails] = useState({});
@@ -30,14 +32,19 @@ export default function App() {
 
   //Notes
   function getNotes() {
+    setIsLoading(true);
     axios
       .get(`http://localhost:8080/api/notes/all/${userDetails._id}`, {
         crossdomain: true,
       })
       .then((response) => {
         setNotes(response.data);
+        setIsLoading(false);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        setIsLoading(false);
+      });
   }
 
   useEffect(() => {
@@ -59,14 +66,15 @@ export default function App() {
   }
 
   function deleteNote(id, key) {
-    setNotes((prevNotes) => {
-      return prevNotes.filter((noteItem, index) => {
-        return index !== id;
-      });
-    });
     axios
       .delete(`http://localhost:8080/api/notes/specific/${key}`)
-      .then((response) => console.log("Note Deleted"))
+      .then((response) => {
+        setNotes((prevNotes) => {
+          return prevNotes.filter((noteItem, index) => {
+            return index !== id;
+          });
+        });
+      })
       .catch((err) => console.log(err));
   }
 
@@ -90,15 +98,15 @@ export default function App() {
   );
 
   //Routes
-  //const isLoggedin = false;
   let routes;
   const path = `/${userDetails._id}`;
-  
+
   if (isLoggedIn) {
     routes = (
       <Switch>
         <Route path={path} exact>
-          <CreateNote onAdd={addNote} />          
+          {isLoading && <LoadingElement />}
+          <CreateNote onAdd={addNote} />
           {noteMap}
         </Route>
         <Redirect to={path} /> {/* ToDo: Redirect to /:userid */}

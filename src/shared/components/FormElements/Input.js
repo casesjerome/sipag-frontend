@@ -59,6 +59,8 @@ const Input = (props) => {
         onChange={changeHandler}
         required={props.isRequired}
         type={props.type}
+        minLength={props.minLength}
+        maxLength={props.maxLength}
       />
     ) : (
       <textarea
@@ -71,6 +73,8 @@ const Input = (props) => {
         onChange={changeHandler}
         required={props.isRequired}
         rows={props.rows || "3"}
+        minLength={props.minLength}
+        maxLength={props.maxLength}
       />
     );
   return (
@@ -99,5 +103,7 @@ const Input = (props) => {
 *isRequired
 *divClass
 textarea *rows
+*minLength
+*maxLength
 */
 export default Input;

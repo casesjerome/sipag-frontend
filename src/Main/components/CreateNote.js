@@ -32,6 +32,7 @@ export default function CreateNote(props) {
           elementType="input"
           onInput={createNoteInputHandler}
           isRequired={true}
+          maxLength="100"
         />
         <Input
           name="content"
@@ -39,6 +40,7 @@ export default function CreateNote(props) {
           elementType="textarea"
           onInput={createNoteInputHandler}
           isRequired={false}
+          maxLength="500"
         />
         <button type="submit" className="btn btn-dark mt-2">
           Add
