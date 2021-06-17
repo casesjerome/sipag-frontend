@@ -11,14 +11,18 @@ import { AuthContext } from "./shared/context/auth-context";
 import Navbar from "./shared/components/Navigation/Navbar";
 import NoteBoard from "./Main/containers/NoteBoard";
 
+let logoutTimer;
+
 export default function App() {
   const [token, setToken] = useState(false);
+  const [tokenExpirationDate, setTokenExpirationDate] = useState();
   const [userDetails, setUserDetails] = useState({});
   const login = useCallback((tkn, userId, username, expirationDate) => {
     setToken(tkn);
     setUserDetails({ _id: userId, username: username });    
     const tokenExpirationDate =
       expirationDate || new Date(new Date().getTime() + 1000 * 60 * 1440);
+      setTokenExpirationDate(tokenExpirationDate);
     localStorage.setItem(
       "userData",
       JSON.stringify({
@@ -31,12 +35,20 @@ export default function App() {
   }, []);
   const logout = useCallback(() => {
     setToken(null);
+    setTokenExpirationDate(null);
+    setUserDetails(null);
     localStorage.removeItem("userData");
   }, []);
-  // const userDetailsHandler = useCallback((userDetailsValue) => {
-  //   setUserDetails(userDetailsValue);
-  // }, []);
 
+  useEffect(()=>{
+    if (token) {
+      const remainingTime = tokenExpirationDate.getTime() - new Date();
+      logoutTimer = setTimeout(logout, remainingTime);
+    } else {
+      clearTimeout(logoutTimer);
+    }
+  },[token, logout, tokenExpirationDate])
+  
   useEffect(() => {
     const storedData = JSON.parse(localStorage.getItem("userData"));
     if (
@@ -58,7 +70,7 @@ export default function App() {
         <Route path={path} exact>
           <NoteBoard />
         </Route>
-        <Redirect to={path} /> {/* ToDo: Redirect to /:userid */}
+        <Redirect to={path} /> 
       </Switch>
     );
   } else {
@@ -82,8 +94,7 @@ export default function App() {
         token: token,
         login: login,
         logout: logout,
-        userDetails: userDetails,
-        //userDetailsHandler: userDetailsHandler,
+        userDetails: userDetails,       
       }}
     >
       <Router>

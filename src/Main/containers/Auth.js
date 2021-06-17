@@ -37,11 +37,8 @@ const Auth = (props) => {
             setIsLoading(false);
           } else {
             const { userId, username } = response.data.data;
-            const { tkn } = response.data;
-         
-           // const userDetailsValue = { _id: userId, username: username };
-
-            //auth.userDetailsHandler(userDetailsValue);
+            const { tkn } = response.data;         
+          
             setIsLoading(false);
             auth.login(tkn, userId, username);
           }
@@ -69,9 +66,7 @@ const Auth = (props) => {
           } else {
             const { userId, username } = response.data.data;
             const { tkn } = response.data;            
-            //const userDetailsValue = { _id: userId, username: username };
-
-            //auth.userDetailsHandler(userDetailsValue);
+            
             setIsLoading(false);
             auth.login(tkn, userId, username);
           }
