@@ -38,12 +38,12 @@ const Auth = (props) => {
           } else {
             const { userId, username } = response.data.data;
             const { tkn } = response.data;
-            //console.log(tkn);
-            const userDetailsValue = { _id: userId, username: username };
+         
+           // const userDetailsValue = { _id: userId, username: username };
 
-            auth.userDetailsHandler(userDetailsValue);
+            //auth.userDetailsHandler(userDetailsValue);
             setIsLoading(false);
-            auth.login(tkn);
+            auth.login(tkn, userId, username);
           }
         })
         .catch((err) => {          
@@ -69,11 +69,11 @@ const Auth = (props) => {
           } else {
             const { userId, username } = response.data.data;
             const { tkn } = response.data;            
-            const userDetailsValue = { _id: userId, username: username };
+            //const userDetailsValue = { _id: userId, username: username };
 
-            auth.userDetailsHandler(userDetailsValue);
+            //auth.userDetailsHandler(userDetailsValue);
             setIsLoading(false);
-            auth.login(tkn);
+            auth.login(tkn, userId, username);
           }
         })
         .catch((err) => {          

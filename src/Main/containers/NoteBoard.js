@@ -42,7 +42,7 @@ const NoteBoard = (props) => {
   useEffect(() => {
     getNotes();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [auth.token]);
+  }, []);
 
   function addNote(note) {
     setIsLoading(true);

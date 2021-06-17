@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -11,18 +11,42 @@ import { AuthContext } from "./shared/context/auth-context";
 import Navbar from "./shared/components/Navigation/Navbar";
 import NoteBoard from "./Main/containers/NoteBoard";
 
-export default function App() {  
-  const [token, setToken] = useState(false);  
+export default function App() {
+  const [token, setToken] = useState(false);
   const [userDetails, setUserDetails] = useState({});
-  const login = useCallback((tkn) => {
+  const login = useCallback((tkn, userId, username, expirationDate) => {
     setToken(tkn);
+    setUserDetails({ _id: userId, username: username });    
+    const tokenExpirationDate =
+      expirationDate || new Date(new Date().getTime() + 1000 * 60 * 1440);
+    localStorage.setItem(
+      "userData",
+      JSON.stringify({
+        token: tkn,
+        userId: userId,
+        username: username,
+        expiration: tokenExpirationDate.toISOString(),
+      })
+    );
   }, []);
   const logout = useCallback(() => {
     setToken(null);
+    localStorage.removeItem("userData");
   }, []);
-  const userDetailsHandler = useCallback((userDetailsValue) => {
-    setUserDetails(userDetailsValue);
-  }, []);  
+  // const userDetailsHandler = useCallback((userDetailsValue) => {
+  //   setUserDetails(userDetailsValue);
+  // }, []);
+
+  useEffect(() => {
+    const storedData = JSON.parse(localStorage.getItem("userData"));
+    if (
+      storedData &&
+      storedData.token &&
+      new Date(storedData.expiration) > new Date()
+    ) {
+      login(storedData.token, storedData.userId, storedData.username,new Date(storedData.expiration));
+    }
+  }, [login]);
 
   //Routes
   let routes;
@@ -59,7 +83,7 @@ export default function App() {
         login: login,
         logout: logout,
         userDetails: userDetails,
-        userDetailsHandler: userDetailsHandler,
+        //userDetailsHandler: userDetailsHandler,
       }}
     >
       <Router>
