@@ -2,7 +2,7 @@
 
 ### Dependencies
 * react
-* react-dom
+* react-router-dom
 * react-scripts
 * qs
 * axios
@@ -10,7 +10,7 @@
 ### ToDo
 - [x] Login/Register
 - [x] Logout
-- [ ] Token
+- [x] Token
 - [ ] Edit user
 - [ ] Edit individual notes
 - [ ] Final design

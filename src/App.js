@@ -13,7 +13,7 @@ import { AuthContext } from "./shared/context/auth-context";
 import { useAuth } from "./hooks/auth-hook";
 
 export default function App() {
-  const {token, login, logout, userDetails} = useAuth()
+  const {token, login, logout, userDetails} = useAuth();
 
   //Routes
   let routes;
