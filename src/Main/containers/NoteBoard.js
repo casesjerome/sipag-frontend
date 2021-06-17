@@ -29,13 +29,7 @@ const NoteBoard = (props) => {
       })
       .catch((err) => {
         setIsLoading(false);
-        if (err.response) {
-          setErrorMessage(err);
-        } else if (err.request) {
-          setErrorMessage("Server is down. Please retry later.");
-        } else { 
-          //ToDo         
-        }  
+        setErrorMessage("Server is down. Please retry later.");
       });
   }
 
@@ -66,10 +60,9 @@ const NoteBoard = (props) => {
           setErrorMessage(err);
         } else if (err.request) {
           setErrorMessage("Server is down. Please retry later.");
-        } else { 
-          //ToDo         
-        }      
-        
+        } else {
+          //ToDo
+        }
       });
   }
 
@@ -96,9 +89,9 @@ const NoteBoard = (props) => {
           setErrorMessage(err);
         } else if (err.request) {
           setErrorMessage("Server is down. Please retry later.");
-        } else { 
-          //ToDo         
-        }  
+        } else {
+          //ToDo
+        }
       });
   }
 
