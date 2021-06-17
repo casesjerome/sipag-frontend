@@ -29,14 +29,39 @@ const NoteBoard = (props) => {
       })
       .catch((err) => {
         setIsLoading(false);
-        setErrorMessage("Server is down. Please retry later.");
+        setErrorMessage("Server is down. Please try again later.");
       });
   }
 
+  //Initial Load of Notes
   useEffect(() => {
-    getNotes();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    const source = axios.CancelToken.source();
+
+    const loadNotes = async () => {
+      setIsLoading(true);
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/api/notes/all/${auth.userDetails._id}`,
+          {
+            crossdomain: true,
+            headers: { Authorization: "Bearer " + auth.token },
+            cancelToken: source.token,
+          }
+        );
+        await setNotes(response.data);
+        setIsLoading(false);
+      } catch (error) {
+        setIsLoading(false);
+        setErrorMessage("Server is down. Please try again later.");
+      }
+    };
+
+    loadNotes();
+   
+    return () => {
+      source.cancel();
+    };
+  }, [auth.token, auth.userDetails._id]);
 
   function addNote(note) {
     setIsLoading(true);
@@ -59,7 +84,7 @@ const NoteBoard = (props) => {
         if (err.response) {
           setErrorMessage(err);
         } else if (err.request) {
-          setErrorMessage("Server is down. Please retry later.");
+          setErrorMessage("Server is down. Please try again later.");
         } else {
           //ToDo
         }
@@ -88,7 +113,7 @@ const NoteBoard = (props) => {
         if (err.response) {
           setErrorMessage(err);
         } else if (err.request) {
-          setErrorMessage("Server is down. Please retry later.");
+          setErrorMessage("Server is down. Please try again later.");
         } else {
           //ToDo
         }
